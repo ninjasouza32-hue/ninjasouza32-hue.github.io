@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moedas do TikTok</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: sans-serif; }
+        body { background: #f5f5f5; }
+        .app { max-width: 420px; margin: 0 auto; background: #fff; min-height: 100vh; }
+        .pagina { display: none; padding: 20px; }
+        .pagina.ativa { display: block; }
+        .topo { display: flex; align-items: center; justify-content: space-between; padding: 15px; border-bottom: 1px solid #eee; }
+        .topo h2 { font-size: 18px; }
+        .aviso-verde { background: #e8f5e9; color: #2e7d32; padding: 10px; border-radius: 6px; text-align: center; margin: 15px 0; }
+        
+        .linha-usuario { display: flex; justify-content: space-between; align-items: center; margin: 15px 0; }
+        .saldo { background: #fff9c4; color: #f57c00; font-weight: bold; padding: 8px 15px; border-radius: 20px; font-size: 15px; }
+        
+        label { font-weight: bold; display: block; margin: 15px 0 5px; }
+        input { width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; font-size: 16px; }
+        
+        .grade-moedas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin: 10px 0 20px; }
+        .botao-moeda { padding: 15px; border: 2px solid #ddd; border-radius: 6px; background: #fff; cursor: pointer; text-align: center; font-size: 16px; }
+        .botao-moeda.selecionado { border-color: #ff4081; background: #fce4ec; }
+        .botao-moeda.personalizar { border-color: #ff4081; background: #fce4ec; color: #e91e63; font-weight: bold; }
+        
+        .caixa-banner { display: flex; align-items: center; background: #fafafa; border: 1px solid #eee; border-radius: 12px; padding: 15px; margin-bottom: 12px; }
+        .caixa-banner .icone { font-size: 32px; margin-right: 15px; }
+        .caixa-banner .conteudo { flex: 1; }
+        .caixa-banner .titulo { font-size: 16px; font-weight: 600; color: #333; }
+        .caixa-banner .subtitulo { font-size: 14px; color: #777; margin-top: 4px; }
+        .caixa-banner .seta { color: #ccc; }
+        .caixa-linha { display: flex; align-items: center; justify-content: space-between; }
+        .botao-adicionar { background: #f0f0f0; border: none; border-radius: 6px; padding: 8px 14px; font-size: 14px; cursor: pointer; }
+        
+        .botao-rosa { width: 100%; padding: 14px; background: #e91e63; color: #fff; border: none; border-radius: 6px; font-size: 17px; font-weight: bold; cursor: pointer; margin-top: 10px; }
+        .botao-voltar { background: none; border: none; font-size: 20px; cursor: pointer; color: #333; }
+        
+        .caixa-entrada { display: flex; align-items: center; border: 1px solid #ddd; border-radius: 6px; padding: 15px; font-size: 20px; margin: 20px 0; }
+        .icone-moeda { width: 24px; height: 24px; background: #ffeb3b; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: bold; margin-right: 10px; font-size: 14px; }
+        
+        .teclado { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; margin-top: 15px; }
+        .tecla { padding: 18px 10px; border: 1px solid #ddd; border-radius: 6px; background: #f5f5f5; font-size: 20px; cursor: pointer; }
+        
+        .linha-resumo { display: flex; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; font-size: 16px; }
+        
+        .contagem { text-align: center; padding-top: 100px; }
+        .numero-contagem { font-size: 90px; font-weight: bold; color: #e91e63; }
+        
+        .sucesso { text-align: center; padding-top: 60px; }
+        .icone-sucesso { width: 100px; height: 100px; background: #e8f5e9; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; }
+        .icone-sucesso i { font-size: 45px; color: #4caf50; }
+        .sucesso h2 { color: #2e7d32; margin-bottom: 20px; }
+        .caixa-info { background: #f9f9f9; padding: 20px; border-radius: 8px; margin-bottom: 25px; }
+    </style>
+</head>
+<body>
+
+<div class="app">
+
+    <!-- PÁGINA 1 - INÍCIO -->
+    <div id="pagina1" class="pagina ativa">
+        <div class="topo">
+            <h2>💰 Moedas do TikTok</h2>
+            <i class="fa fa-question-circle"></i>
+        </div>
+        
+        <div class="aviso-verde">
+            <i class="fa fa-shield"></i> Pagamento seguro
+        </div>
+        
+        <label>Digite o @ do usuário:</label>
+        <input type="text" id="usuario" value="seligaaqui.ofc7">
+        
+        <div class="linha-usuario">
+            <label style="margin:0;">Escolha a quantidade:</label>
+            <div class="saldo" id="mostrarSaldo">💰 R$ 9.000,00</div>
+        </div>
+        
+        <div class="grade-moedas">
+            <button class="botao-moeda selecionado" onclick="escolher(30, 1.69, this)">
+                <div><strong>30</strong></div>
+                <div style="font-size:13px; color:#666">R$ 1,69</div>
+            </button>
+            <button class="botao-moeda" onclick="escolher(50, 2.79, this)">
+                <div><strong>50</strong></div>
+                <div style="font-size:13px; color:#666">R$ 2,79</div>
+            </button>
+            <button class="botao-moeda" onclick="escolher(100, 5.59, this)">
+                <div><strong>100</strong></div>
+                <div style="font-size:13px; color:#666">R$ 5,59</div>
+            </button>
+            <button class="botao-moeda" onclick="escolher(200, 11.15, this)">
+                <div><strong>200</strong></div>
+                <div style="font-size:13px; color:#666">R$ 11,15</div>
+            </button>
+            <button class="botao-moeda" onclick="escolher(500, 27.85, this)">
+                <div><strong>500</strong></div>
+                <div style="font-size:13px; color:#666">R$ 27,85</div>
+            </button>
+            <button class="botao-moeda personalizar" onclick="abrirPersonalizar()">
+                <div><strong>Personalizar</strong></div>
+                <div style="font-size:13px">✏️</div>
+            </button>
+        </div>
+        
+        <div class="caixa-banner">
+            <div class="icone">🤝</div>
+            <div class="conteudo">
+                <div class="titulo">Convide alguém e ganhe até $150 por amigo</div>
+                <div class="subtitulo">Mais amigos, mais cashback!</div>
+            </div>
+            <div class="seta"><i class="fa fa-chevron-right"></i></div>
+        </div>
+        
+        <div class="caixa-banner caixa-linha">
+            <div style="display:flex; align-items:center;">
+                <div class="icone">📱</div>
+                <div class="conteudo">
+                    <div class="titulo">Adicione esta página à tela inicial para acesso de um toque</div>
+                </div>
+            </div>
+            <button class="botao-adicionar">Adicionar</button>
+        </div>
+        
+        <button class="botao-rosa" onclick="irResumo()">Continuar</button>
+    </div>
+
+    <!-- PÁGINA PERSONALIZAR -->
+    <div id="paginaPersonalizar" class="pagina">
+        <div class="topo">
+            <button class="botao-voltar" onclick="irPagina('pagina1')"><i class="fa fa-chevron-left"></i></button>
+            <h2>Personalizado</h2>
+            <i class="fa fa-question-circle"></i>
+        </div>
+        
+        <label>Número de Moedas</label>
+        <div class="caixa-entrada">
+            <span class="icone-moeda">🪙</span>
+            <span id="mostrarValor">30</span>
+            <span style="color:#aaa; margin-left:8px;">- 2.500.000</span>
+        </div>
+        
+        <div class="teclado">
+            <button class="tecla" onclick="digitar('1')">1</button>
+            <button class="tecla" onclick="digitar('2')">2</button>
+            <button class="tecla" onclick="digitar('3')">3</button>
+            <button class="tecla" onclick="apagar()"><i class="fa fa-times"></i></button>
+            
+            <button class="tecla" onclick="digitar('4')">4</button>
+            <button class="tecla" onclick="digitar('5')">5</button>
+            <button class="tecla" onclick="digitar('6')">6</button>
+            <button class="tecla" onclick="digitar('000')">000</button>
+            
+            <button class="tecla" onclick="digitar('7')">7</button>
+            <button class="tecla" onclick="digitar('8')">8</button>
+            <button class="tecla" onclick="digitar('9')">9</button>
+            <button class="tecla" onclick="digitar('0')">0</button>
+        </div>
+        
+        <button class="botao-rosa" onclick="usarValor()">Usar este valor</button>
+    </div>
+
+    <!-- PÁGINA RESUMO -->
+    <div id="paginaResumo" class="pagina">
+        <div class="topo">
+            <button class="botao-voltar" onclick="irPagina('pagina1')"><i class="fa fa-chevron-left"></i></button>
+            <h2>Resumo do Pedido</h2>
+        </div>
+        
+        <div class="aviso-verde">
+            <i class="fa fa-shield"></i> Pagamento seguro
+        </div>
+        
+        <div class="linha-resumo">
+            <span>Conta:</span>
+            <span id="rUsuario">@seligaaqui.ofc7</span>
+        </div>
+        <div class="linha-resumo">
+            <span>Moedas:</span>
+            <span id="rMoedas">30</span>
+        </div>
+        <div class="linha-resumo">
+            <span>Total a descontar:</span>
+            <span id="rPreco">R$ 1,69</span>
+        </div>
+        <div class="linha-resumo">
+            <span>Saldo após:</span>
+            <span id="rSaldo">R$ 8.998,31</span>
+        </div>
+        
+        <button class="botao-rosa" onclick="iniciarContagem()">Pagar Agora</button>
+    </div>
+
+    <!-- PÁGINA CONTAGEM -->
+    <div id="paginaContagem" class="pagina">
+        <div class="contagem">
+            <p style="font-size:18px; color:#666; margin-bottom:15px;">Processando...</p>
+            <div class="numero-contagem" id="contador">5</div>
+        </div>
+    </div>
+
+    <!-- PÁGINA SUCESSO -->
+    <div id="paginaSucesso" class="pagina">
+        <div class="sucesso">
+            <div class="icone-sucesso">
+                <i class="fa fa-check"></i>
+            </div>
+            <h2>✅ Moedas Enviadas com Sucesso!</h2>
+            
+            <div class="caixa-info">
+                <p><strong>Usuário:</strong> <span id="sUsuario">@seligaaqui.ofc7</span></p>
+                <p><strong>Moedas:</strong> <span id="sMoedas">30</span> 🪙</p>
+                <p><strong>Valor gasto:</strong> <span id="sValor">R$ 1,69</span></p>
+                <p><strong>Saldo atual:</strong> <span id="sSaldo">R$ 8.998,31</span></p>
+            </div>
+            
+            <button class="botao-rosa" onclick="irPagina('pagina1')">Enviar Novamente</button>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    let saldoAtual = 9000.00;
+    let qtdMoedas = 30;
+    let preco = 1.69;
+    let valorPersonalizado = '30';
+
+    function fmt(dinheiro) {
+        return 'R$ ' + dinheiro.toFixed(2).replace('.', ',');
+    }
+
+    function irPagina(id) {
+        document.querySelectorAll('.pagina').forEach(p => p.classList.remove('ativa'));
+        document.getElementById(id).classList.add('ativa');
+    }
+
+    function escolher(qtd, val, botao) {
+        qtdMoedas = qtd;
+        preco = val;
+        valorPersonalizado = String(qtd);
+        document.querySelectorAll('.botao-moeda').forEach(b => b.classList.remove('selecionado'));
+        botao.classList.add('selecionado');
+    }
+
+    function abrirPersonalizar() {
+        valorPersonalizado = '30';
+        document.getElementById('mostrarValor').textContent = valorPersonalizado;
+        irPagina('paginaPersonalizar');
+    }
+
+    function digitar(n) {
+        if (valorPersonalizado === '30') valorPersonalizado = '';
+        valorPersonalizado += n;
+        document.getElementById('mostrarValor').textContent = valorPersonalizado || '0';
+    }
+
+    function apagar() {
+        if (valorPersonalizado.length > 1) {
+            valorPersonalizado = valorPersonalizado.slice(0, -1);
+        } else {
+            valorPersonalizado = '30';
+        }
+        document.getElementById('mostrarValor').textContent = valorPersonalizado;
+    }
+
+    function usarValor() {
+        qtdMoedas = parseInt(valorPersonalizado) || 30;
+        preco = qtdMoedas * 0.056;
+        irPagina('pagina1');
+    }
+
+    function irResumo() {
+        const usuario = document.getElementById('usuario').value || '@usuario';
+        const saldoFinal = saldoAtual - preco;
+        document.getElementById('rUsuario').textContent = usuario;
+        document.getElementById('rMoedas').textContent = qtdMoedas + ' moedas';
+        document.getElementById('rPreco').textContent = fmt(preco);
+        document.getElementById('rSaldo').textContent = fmt(saldoFinal);
+        irPagina('paginaResumo');
+    }
+
+    function iniciarContagem() {
+        irPagina('paginaContagem');
+        let num = 5;
+        document.getElementById('contador').textContent = num;
+        const tempo = setInterval(function() {
+            num--;
+            if (num > 0) {
+                document.getElementById('contador').textContent = num;
+            } else {
+                clearInterval(tempo);
+                mostrarSucesso();
+            }
+        }, 1000);
+    }
+
+    function mostrarSucesso() {
+        saldoAtual = saldoAtual - preco;
+        document.getElementById('mostrarSaldo').textContent = '💰 ' + fmt(saldoAtual);
+        
+        const usuario = document.getElementById('usuario').value || '@usuario';
+        document.getElementById('sUsuario').textContent = usuario;
+        document.getElementById('sMoedas').textContent = qtdMoedas;
+        document.getElementById('sValor').textContent = fmt(preco);
+        document.getElementById('sSaldo').textContent = fmt(saldoAtual);
+        
+        irPagina('paginaSucesso');
+    }
+</script>
+
+</body>
+</html>
